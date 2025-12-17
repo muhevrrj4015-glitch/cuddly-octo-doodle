@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>賣油翁 - 歐陽修 (含廣東話朗讀)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #8e44ad; /* 紫色系，區別於上一篇 */
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --white: #ffffff;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .tab-btn:hover {
+            background-color: #ecf0f1;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+
+        /* Tab Content */
+        .content-section {
+            display: none;
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: var(--accent-color);
+            margin-top: 25px;
+            font-size: 1.2rem;
+        }
+
+        /* Audio Controls */
+        .audio-panel {
+            background-color: #f3e5f5; /* 淺紫色背景 */
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .audio-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            color: white;
+        }
+
+        .btn-play { background-color: #27ae60; }
+        .btn-play:hover { background-color: #219150; }
+        
+        .btn-pause { background-color: #f39c12; }
+        .btn-pause:hover { background-color: #d68910; }
+
+        .btn-stop { background-color: #c0392b; }
+        .btn-stop:hover { background-color: #a93226; }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+
+        .status-msg {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Original Text Styling */
+        .classical-text {
+            font-family: "BiauKai", "DFKai-SB", serif;
+            font-size: 1.3rem;
+            line-height: 2.2;
+            text-align: justify;
+        }
+
+        .classical-text p {
+            margin-bottom: 1.5rem;
+            text-indent: 2em;
+        }
+
+        .note-ref {
+            font-size: 0.7em;
+            color: var(--accent-color);
+            vertical-align: super;
+            margin-left: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Annotations List */
+        .annotation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .annotation-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .annotation-list strong {
+            color: var(--accent-color);
+            display: inline-block;
+            width: 30px;
+            font-size: 1.1em;
+        }
+        
+        .pronunciation {
+            color: #666;
+            font-size: 0.9em;
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        /* Quiz Styling */
+        .quiz-question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .quiz-options label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .quiz-options label:hover {
+            background: #e8e8e8;
+        }
+
+        .quiz-options input {
+            margin-right: 10px;
+        }
+
+        #submit-quiz {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #submit-quiz:hover {
+            background-color: #7d3c98;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .correct { color: green; }
+        .incorrect { color: red; }
+        .explanation {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 8px;
+            display: none;
+            background: #fff;
+            padding: 10px;
+            border: 1px dashed #ccc;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .tab-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            .classical-text {
+                font-size: 1.1rem;
+            }
+            .audio-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .speed-control {
+                margin-left: 0;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>賣油翁</h1>
+    <p>歐陽修</p>
+</header>
+
+<div class="container">
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('text')">原文閱讀</button>
+        <button class="tab-btn" onclick="openTab('notes')">重點註釋</button>
+        <button class="tab-btn" onclick="openTab('analysis')">背景與賞析</button>
+        <button class="tab-btn" onclick="openTab('quiz')">温習測驗</button>
+    </div>
+
+    <!-- Tab 1: Original Text -->
+    <div id="text" class="content-section active">
+        <h2>原文</h2>
+        
+        <!-- Audio Panel -->
+        <div class="audio-panel">
+            <div class="audio-controls">
+                <button class="audio-btn btn-play" onclick="speakText()">🔊 朗讀全文</button>
+                <button class="audio-btn btn-pause" onclick="pauseText()">⏸ 暫停</button>
+                <button class="audio-btn btn-play" onclick="resumeText()">▶ 繼續</button>
+                <button class="audio-btn btn-stop" onclick="stopText()">⏹ 停止</button>
+                
+                <div class="speed-control">
+                    <label for="rate">語速:</label>
+                    <input type="range" id="rate" min="0.5" max="1.5" value="0.9" step="0.1">
+                </div>
+            </div>
+            <div id="voice-status" class="status-msg">正在載入語音...</div>
+        </div>
+
+        <div class="classical-text">
+            <p>
+                陳康肅公堯咨<span class="note-ref">1</span>善射，當世無雙，公亦以此自矜<span class="note-ref">2</span>。嘗射於家圃<span class="note-ref">3</span>，有賣油翁釋擔<span class="note-ref">4</span>而立，睨<span class="note-ref">5</span>之，久而不去。見其發矢十中八九，但微頷之<span class="note-ref">6</span>。
+            </p>
+            <p>
+                康肅問曰：「汝亦知射<span class="note-ref">7</span>乎？吾射不亦精乎<span class="note-ref">8</span>？」翁曰：「無他，但手熟爾<span class="note-ref">9</span>。」康肅忿然<span class="note-ref">10</span>曰：「爾安敢輕<span class="note-ref">11</span>吾射！」翁曰：「以我酌油知之<span class="note-ref">12</span>。」乃<span class="note-ref">13</span>取一葫蘆置於地，以錢覆<span class="note-ref">14</span>其口，徐以杓酌油瀝之<span class="note-ref">15</span>，自錢孔入，而錢不濕。因曰：「我亦無他，惟<span class="note-ref">16</span>手熟爾。」康肅笑而遣之<span class="note-ref">17</span>。
+            </p>
+        </div>
+    </div>
+
+    <!-- Tab 2: Annotations -->
+    <div id="notes" class="content-section">
+        <h2>註釋詳解</h2>
+        <ul class="annotation-list">
+            <li><strong>1</strong> 陳康肅公堯咨：陳堯咨（公元 970–1034）。北宋閬州閬中人。真宗年間進士第一。善射。卒謚「康肅」。</li>
+            <li><strong>2</strong> 自矜：自負、自誇。矜 <span class="pronunciation">粵 [經] ging1</span>。</li>
+            <li><strong>3</strong> 嘗：曾經。圃：一般指種植蔬果花卉的園地，這裏指家中練習射箭的場地。<span class="pronunciation">粵 [普] pou2</span>。</li>
+            <li><strong>4</strong> 釋擔：放下挑在擔上的東西。釋：放下。擔：扁擔。</li>
+            <li><strong>5</strong> 睨：斜着眼睛看，表示不以為然、漫不經心。<span class="pronunciation">粵 [藝] ngai6</span>。</li>
+            <li><strong>6</strong> 頷：俗稱「下巴」，這裏指點頭，表示讚許。<span class="pronunciation">粵 [ham5]</span>。</li>
+            <li><strong>7</strong> 射：指箭術，作名詞用。</li>
+            <li><strong>8</strong> 不亦精乎：「不亦……乎」表示肯定的反問句。</li>
+            <li><strong>9</strong> 但手熟爾：只是手法純熟而已。爾：而已、罷了，語氣助詞。</li>
+            <li><strong>10</strong> 忿然：憤怒地。忿 <span class="pronunciation">粵 [奮] fan5</span>。</li>
+            <li><strong>11</strong> 輕：輕視。</li>
+            <li><strong>12</strong> 以我酌油知之：憑我倒油的經驗，知道這個道理。以：憑藉。酌：斟、倒。</li>
+            <li><strong>13</strong> 乃：於是。</li>
+            <li><strong>14</strong> 覆：覆蓋。<span class="pronunciation">粵 [埠] fau6</span>。</li>
+            <li><strong>15</strong> 徐以杓酌油瀝之：慢慢地用勺子舀油滴入葫蘆。徐：緩慢。杓：通「勺」。瀝：滴下。<span class="pronunciation">粵 [雀] zoek3</span>。</li>
+            <li><strong>16</strong> 惟：只是、不過。</li>
+            <li><strong>17</strong> 遣之：打發他離去。</li>
+        </ul>
+    </div>
+
+    <!-- Tab 3: Background & Analysis -->
+    <div id="analysis" class="content-section">
+        <h2>背景與賞析</h2>
+        
+        <h3>1. 作者簡介</h3>
+        <p>歐陽修（公元 1007–1072），字永叔，號醉翁，晚年自號「六一居士」。北宋著名文學家、史學家，唐宋八大家之一。他主張文章應「明道」、「致用」，反對綺靡文風，是北宋古文運動的領袖。</p>
+
+        <h3>2. 出處與背景</h3>
+        <p>本文選自《歸田錄》卷一。該書乃歐陽修晚年所作，記載朝廷遺事及士大夫的笑談，屬於歷史筆記範疇。文題「賣油翁」為編者所定。</p>
+
+        <h3>3. 主旨</h3>
+        <p>本文通過賣油翁神乎其技的注油技術，帶出<strong>「熟能生巧」</strong>的道理，並勸喻人不要因擁有一技之長而驕傲自滿。</p>
+
+        <h3>4. 寫作特色與賞析</h3>
+        <ul>
+            <li><strong>情節緊湊，善設懸念：</strong>先寫陳堯咨箭術無雙且自負，再寫賣油翁「睨之」、「微頷之」的不以為然，製造衝突。最後賣油翁以注油絕技化解矛盾，情節起伏跌宕。</li>
+            <li><strong>人物形象鮮明：</strong>
+                <ul>
+                    <li><strong>陳堯咨：</strong>自矜（十中八九）、易怒（忿然）、知錯能改（笑而遣之）。</li>
+                    <li><strong>賣油翁：</strong>深藏不露、從容不迫（徐以杓酌油）、不卑不亢。</li>
+                </ul>
+            </li>
+            <li><strong>動作描寫細膩：</strong>用「取」、「置」、「覆」、「酌」、「瀝」等動詞，精確描繪賣油翁注油的一連串動作，展現其技藝之純熟。</li>
+        </ul>
+    </div>
+
+    <!-- Tab 4: Quiz -->
+    <div id="quiz" class="content-section">
+        <h2>温習測驗</h2>
+        <p>請根據課文內容，選出正確答案。</p>
+        
+        <form id="quiz-form">
+            <!-- Question 1 -->
+            <div class="quiz-question">
+                <p>1. 賣油翁看到陳堯咨射箭「十中八九」，他的反應是甚麼？</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="A"> A. 拍手叫好，大加讚賞</label>
+                    <label><input type="radio" name="q1" value="B"> B. 不屑一顧，轉身離開</label>
+                    <label><input type="radio" name="q1" value="C"> C. 睨之，但微頷之</label>
+                    <label><input type="radio" name="q1" value="D"> D. 嘲笑他的箭術</label>
+                </div>
+                <div class="explanation" id="exp-q1">答案：C。原文：「睨之，久而不去。見其發矢十中八九，但微頷之。」</div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-question">
+                <p>2. 文中「公亦以此自矜」的「矜」字是甚麼意思？</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="A"> A. 謹慎</label>
+                    <label><input type="radio" name="q2" value="B"> B. 自負、誇耀</label>
+                    <label><input type="radio" name="q2" value="C"> C. 憐憫</label>
+                    <label><input type="radio" name="q2" value="D"> D. 堅持</label>
+                </div>
+                <div class="explanation" id="exp-q2">答案：B。「自矜」意指自誇、自負。</div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-question">
+                <p>3. 賣油翁如何證明「熟能生巧」的道理？</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3" value="A"> A. 與陳堯咨比試射箭</label>
+                    <label><input type="radio" name="q3" value="B"> B. 快速地挑起重擔</label>
+                    <label><input type="radio" name="q3" value="C"> C. 將油穿過錢孔注入葫蘆而不濕銅錢</label>
+                    <label><input type="radio" name="q3" value="D"> D. 口若懸河地講述大道理</label>
+                </div>
+                <div class="explanation" id="exp-q3">答案：C。賣油翁表演了高難度的注油技巧：「自錢孔入，而錢不濕」。</div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="quiz-question">
+                <p>4. 陳堯咨最後對賣油翁的態度如何？</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q4" value="A"> A. 惱羞成怒，將他趕走</label>
+                    <label><input type="radio" name="q4" value="B"> B. 笑而遣之</label>
+                    <label><input type="radio" name="q4" value="C"> C. 拜他為師</label>
+                    <label><input type="radio" name="q4" value="D"> D. 慚愧得無地自容</label>
+                </div>
+                <div class="explanation" id="exp-q4">答案：B。原文最後一句：「康肅笑而遣之。」表示他已領悟道理，不再生氣。</div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="quiz-question">
+                <p>5. 本文主要想說明的道理是甚麼？</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5" value="A"> A. 勤能補拙</label>
+                    <label><input type="radio" name="q5" value="B"> B. 熟能生巧</label>
+                    <label><input type="radio" name="q5" value="C"> C. 驕兵必敗</label>
+                    <label><input type="radio" name="q5" value="D"> D. 人不可貌相</label>
+                </div>
+                <div class="explanation" id="exp-q5">答案：B。藉由賣油翁的話「無他，但手熟爾」，點出凡事只要多練習自然會精通的道理。</div>
+            </div>
+
+            <button type="button" id="submit-quiz" onclick="checkQuiz()">提交答案</button>
+        </form>
+
+        <div id="quiz-result" class="result-box"></div>
+    </div>
+</div>
+
+<script>
+    // Tab Switching Logic
+    function openTab(tabName) {
+        var i, content, tablinks;
+        
+        content = document.getElementsByClassName("content-section");
+        for (i = 0; i < content.length; i++) {
+            content[i].classList.remove("active");
+        }
+        
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+    }
+
+    // Quiz Logic
+    function checkQuiz() {
+        const answers = { q1: 'C', q2: 'B', q3: 'C', q4: 'B', q5: 'B' };
+        let score = 0;
+        let total = 5;
+        let form = document.getElementById('quiz-form');
+        let resultBox = document.getElementById('quiz-result');
+        
+        let explanations = document.getElementsByClassName('explanation');
+        for(let exp of explanations) {
+            exp.style.display = 'none';
+        }
+
+        for (let q in answers) {
+            let selected = form.elements[q].value;
+            let explanationDiv = document.getElementById('exp-' + q);
+            
+            if (selected === answers[q]) {
+                score++;
+                explanationDiv.innerHTML = "<span class='correct'>✅ 答對了！</span> " + explanationDiv.innerText.replace("✅ 答對了！ ", "").replace("❌ 答錯了。 ", "");
+            } else {
+                explanationDiv.innerHTML = "<span class='incorrect'>❌ 答錯了。</span> " + explanationDiv.innerText.replace("✅ 答對了！ ", "").replace("❌ 答錯了。 ", "");
+            }
+            explanationDiv.style.display = 'block';
+        }
+
+        let percentage = (score / total) * 100;
+        let msg = "";
+        if (percentage === 100) msg = "太棒了！你已經完全掌握了課文內容！";
+        else if (percentage >= 60) msg = "做得不錯！再複習一下錯題會更好。";
+        else msg = "加油！建議回到「原文閱讀」與「註釋詳解」再温習一遍。";
+
+        resultBox.style.display = 'block';
+        resultBox.style.backgroundColor = percentage >= 60 ? '#d4edda' : '#f8d7da';
+        resultBox.style.color = percentage >= 60 ? '#155724' : '#721c24';
+        resultBox.innerHTML = `你的得分：${score} / ${total} (${percentage}%)<br>${msg}`;
+    }
+
+    // --- Text-to-Speech (TTS) Logic ---
+    let synth = window.speechSynthesis;
+    let voice = null;
+    let utterance = null;
+    
+    // Clean text without note numbers for reading
+    const cleanText = `
+        陳康肅公堯咨善射，當世無雙，公亦以此自矜。嘗射於家圃，有賣油翁釋擔而立，睨之，久而不去。見其發矢十中八九，但微頷之。
+        康肅問曰：「汝亦知射乎？吾射不亦精乎？」翁曰：「無他，但手熟爾。」康肅忿然曰：「爾安敢輕吾射！」翁曰：「以我酌油知之。」乃取一葫蘆置於地，以錢覆其口，徐以杓酌油瀝之，自錢孔入，而錢不濕。因曰：「我亦無他，惟手熟爾。」康肅笑而遣之。
+    `;
+
+    // Load Voices
+    function loadVoices() {
+        let voices = synth.getVoices();
+        // Try to find Cantonese (HK) voice
+        voice = voices.find(v => v.lang === 'zh-HK') || 
+                voices.find(v => v.lang === 'yue-HK') ||
+                voices.find(v => v.lang.includes('zh') && v.name.includes('HK'));
+
+        let statusDiv = document.getElementById('voice-status');
+        if (voice) {
+            statusDiv.innerHTML = `✅ 已就緒 (使用語音: ${voice.name})`;
+            statusDiv.style.color = 'green';
+        } else {
+            let fallbackVoice = voices.find(v => v.lang === 'zh-CN');
+            if(fallbackVoice) {
+                statusDiv.innerHTML = `⚠️ 未偵測到廣東話語音包，將使用普通話或系統預設 (${fallbackVoice.name})。`;
+            } else {
+                statusDiv.innerHTML = `❌ 未偵測到中文語音包，朗讀功能可能無法使用。`;
+            }
+        }
+    }
+
+    // Initialize voices
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+    }
+    loadVoices();
+
+    function speakText() {
+        if (synth.speaking) {
+            console.error('speechSynthesis.speaking');
+            return;
+        }
+
+        if (cleanText !== '') {
+            utterance = new SpeechSynthesisUtterance(cleanText);
+            
+            // Set Voice
+            if (voice) {
+                utterance.voice = voice;
+            } else {
+                utterance.lang = 'zh-HK';
+            }
+
+            // Set Rate
+            const rate = document.getElementById('rate').value;
+            utterance.rate = rate;
+
+            synth.speak(utterance);
+        }
+    }
+
+    function pauseText() {
+        if (synth.speaking && !synth.paused) {
+            synth.pause();
+        }
+    }
+
+    function resumeText() {
+        if (synth.paused) {
+            synth.resume();
+        }
+    }
+
+    function stopText() {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+    }
+    
+    window.onbeforeunload = function() {
+        synth.cancel();
+    };
+</script>
+
+</body>
+</html>
